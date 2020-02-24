@@ -11,3 +11,6 @@ datasource:
   username: postgres
   password: toor
   driver-class-name: org.postgresql.Driver
+
+authentication:
+  delay: 60
