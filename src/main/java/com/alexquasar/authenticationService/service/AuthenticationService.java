@@ -3,11 +3,9 @@ package com.alexquasar.authenticationService.service;
 import com.alexquasar.authenticationService.dto.mailInteraction.DataMail;
 import com.alexquasar.authenticationService.entity.Mail;
 import com.alexquasar.authenticationService.entity.User;
-//import com.alexquasar.authenticationService.entity.UserVisit;
 import com.alexquasar.authenticationService.exception.ServiceException;
 import com.alexquasar.authenticationService.repository.MailRepository;
 import com.alexquasar.authenticationService.repository.UserRepository;
-//import com.alexquasar.authenticationService.repository.UserVisitRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -20,16 +18,13 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class AuthenticationService {
 
     private MailRepository mailRepository;
     private UserRepository userRepository;
-//    private UserVisitRepository userVisitRepository;
 
     @Value("${authentication.delay}")
     private int delay;
@@ -37,10 +32,8 @@ public class AuthenticationService {
     private Key securityKey;
 
     public AuthenticationService(MailRepository mailRepository, UserRepository userRepository) {
-//                                 UserVisitRepository userVisitRepository) {
         this.mailRepository = mailRepository;
         this.userRepository = userRepository;
-//        this.userVisitRepository = userVisitRepository;
 
         byte[] keys = DatatypeConverter.parseBase64Binary(key);
         securityKey = new SecretKeySpec(keys, SignatureAlgorithm.HS512.getJcaName());
@@ -71,23 +64,27 @@ public class AuthenticationService {
         return "";
     }
 
-//    public List<UserVisit> getTodayVisits(String token) throws ServiceException {
-//        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(this.securityKey).parseClaimsJws(token);
-//        Claims body = claimsJws.getBody();
-//
-//        Mail mail = this.mailRepository.findByLogin(body.getId());
-//        if (mail == null) {
-//            throw new ServiceException("You not registered", HttpStatus.FORBIDDEN);
-//        }
-//
-//        Date expiration = body.getExpiration();
-//        if (expiration.after(new Date(Instant.now().toEpochMilli()))) {
-//            User user = userRepository.findById(mail.getUser().getId());
-//            return userVisitRepository.findAllByUserAndDay(user, LocalDate.now());
-//        } else {
-//            throw new ServiceException("Please, authorized again", HttpStatus.UNAUTHORIZED);
-//        }
-//    }
+    public User getUser(String token) throws ServiceException {
+        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(this.securityKey).parseClaimsJws(token);
+        Claims body = claimsJws.getBody();
+
+        Mail mail = this.mailRepository.findByLogin(body.getId());
+        if (mail == null) {
+            throw new ServiceException("You not registered", HttpStatus.FORBIDDEN);
+        }
+
+        Date expiration = body.getExpiration();
+        if (expiration.after(new Date(Instant.now().toEpochMilli()))) {
+            User user = userRepository.findById(mail.getUser().getId());
+            if (user != null) {
+                return user;
+            } else {
+                throw new ServiceException("This user not found", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new ServiceException("Please, authorized again", HttpStatus.UNAUTHORIZED);
+        }
+    }
 
     private Boolean isMailExist(String login, String password) {
         Mail mail = this.mailRepository.findByLogin(login);

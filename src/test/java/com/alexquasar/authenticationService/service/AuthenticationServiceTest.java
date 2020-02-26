@@ -3,10 +3,8 @@ package com.alexquasar.authenticationService.service;
 import com.alexquasar.authenticationService.dto.mailInteraction.DataMail;
 import com.alexquasar.authenticationService.entity.Mail;
 import com.alexquasar.authenticationService.entity.User;
-//import com.alexquasar.authenticationService.entity.UserVisit;
 import com.alexquasar.authenticationService.repository.MailRepository;
 import com.alexquasar.authenticationService.repository.UserRepository;
-//import com.alexquasar.authenticationService.repository.UserVisitRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -14,9 +12,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.lang.reflect.Field;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -29,9 +24,6 @@ public class AuthenticationServiceTest {
 
     @Mock
     UserRepository userRepository;
-
-//    @Mock
-//    UserVisitRepository userVisitRepository;
 
     @InjectMocks
     AuthenticationService authenticationService;
@@ -68,23 +60,18 @@ public class AuthenticationServiceTest {
         verify(mailRepository).findByLogin(anyString());
     }
 
-//    @Test
-//    public void getTodayVisits() {
-//        initialSettings();
-//        Mail mail = new Mail(dataMail, user);
-//
-//        UserVisit userVisit = new UserVisit();
-//        userVisit.setUser(user);
-//        List<UserVisit> visits = Arrays.asList(userVisit);
-//
-//        when(mailRepository.findByLogin(anyString())).thenReturn(mail);
-//        when(userRepository.findById(anyInt())).thenReturn(user);
-//        when(userVisitRepository.findAllByUserAndDay(any(User.class), any(LocalDate.class))).thenReturn(visits);
-//
-//        List<UserVisit> userVisits = authenticationService.getTodayVisits(tokenHundredYears);
-//
-//        assertEquals(visits.size(), userVisits.size());
-//    }
+    @Test
+    public void getUser() {
+        initialSettings();
+        Mail mail = new Mail(dataMail, user);
+
+        when(mailRepository.findByLogin(anyString())).thenReturn(mail);
+        when(userRepository.findById(anyInt())).thenReturn(user);
+
+        User findUser = authenticationService.getUser(tokenHundredYears);
+
+        assertEquals(findUser, user);
+    }
 
     private void initialSettings() {
         dataMail = new DataMail("test_mail@google.com", "12345", "test_user");

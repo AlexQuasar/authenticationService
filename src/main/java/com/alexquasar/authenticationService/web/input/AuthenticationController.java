@@ -1,13 +1,11 @@
 package com.alexquasar.authenticationService.web.input;
 
 import com.alexquasar.authenticationService.dto.mailInteraction.DataMail;
-//import com.alexquasar.authenticationService.entity.UserVisit;
+import com.alexquasar.authenticationService.entity.User;
 import com.alexquasar.authenticationService.service.AuthenticationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/authentication")
@@ -39,8 +37,8 @@ public class AuthenticationController {
         }
     }
 
-//    @GetMapping("/getTodayVisits/{token}")
-//    public List<UserVisit> getTodayVisits(@PathVariable String token) {
-//        return this.authenticationService.getTodayVisits(token);
-//    }
+    @GetMapping("/getUser/{token}")
+    public User getUser(@PathVariable String token) {
+        return this.authenticationService.getUser(token);
+    }
 }

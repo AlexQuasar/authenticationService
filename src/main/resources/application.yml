@@ -6,6 +6,9 @@ spring:
       dialect: org.hibernate.dialect.PostgreSQLDialect
       ddl-auto: create-drop
 
+server:
+  port: 8080
+
 datasource:
   url: jdbc:postgresql://localhost:5432/postgres
   username: postgres
