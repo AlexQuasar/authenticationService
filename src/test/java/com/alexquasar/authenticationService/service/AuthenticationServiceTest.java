@@ -5,6 +5,7 @@ import com.alexquasar.authenticationService.entity.Mail;
 import com.alexquasar.authenticationService.entity.User;
 import com.alexquasar.authenticationService.repository.MailRepository;
 import com.alexquasar.authenticationService.repository.UserRepository;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -33,10 +34,15 @@ public class AuthenticationServiceTest {
 
     final String tokenHundredYears = "eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJtYWlsXzFAZ29vZ2xlLmNvbSIsImV4cCI6NDczNzg5MTQwNH0.3eIKjn783JMyoAROR5yjXFLJuWM3fRfVrjVTIr73REalQ1ZSfbzdjyPBN5dnBxE1qeT-vc0FJEWEap4Fvx0VMA";
 
-    @Test
-    public void registration() {
-        initialSettings();
+    @Before
+    public void setUp() {
+        dataMail = new DataMail("test_mail@google.com", "12345", "test_user");
+        user = new User();
+        user.setName(dataMail.getUserName());
+    }
 
+    @Test
+    public void registrationTest() {
         when(userRepository.findByName(anyString())).thenReturn(user);
 
         assertTrue(authenticationService.registration(dataMail));
@@ -46,10 +52,8 @@ public class AuthenticationServiceTest {
     }
 
     @Test
-    public void authorization() {
-        initialSettings();
+    public void authorizationTest() {
         Mail mail = new Mail(dataMail, user);
-
         when(mailRepository.findByLogin(dataMail.getLogin())).thenReturn(mail);
 
         int delay = 5;
@@ -61,22 +65,14 @@ public class AuthenticationServiceTest {
     }
 
     @Test
-    public void getUser() {
-        initialSettings();
+    public void getUserTest() {
         Mail mail = new Mail(dataMail, user);
-
         when(mailRepository.findByLogin(anyString())).thenReturn(mail);
         when(userRepository.findById(anyInt())).thenReturn(user);
 
         User findUser = authenticationService.getUser(tokenHundredYears);
 
         assertEquals(findUser, user);
-    }
-
-    private void initialSettings() {
-        dataMail = new DataMail("test_mail@google.com", "12345", "test_user");
-        user = new User();
-        user.setName(dataMail.getUserName());
     }
 
     private Boolean setDelayPrivateField(int delay) {
