@@ -1,7 +1,6 @@
 package com.alexquasar.authenticationService.web.input;
 
 import com.alexquasar.authenticationService.entity.User;
-import com.alexquasar.authenticationService.exception.ServiceException;
 import com.alexquasar.authenticationService.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;

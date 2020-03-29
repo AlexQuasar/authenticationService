@@ -20,16 +20,8 @@ public class User {
     @Column(name = "name")
     private String name;
 
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
-//    private Set<UserVisit> userVisits;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Mail> mails;
-
-//    @JsonIgnore
-//    public Set<UserVisit> getUserVisits() {
-//        return userVisits;
-//    }
 
     @JsonIgnore
     public Set<Mail> getMails() {
